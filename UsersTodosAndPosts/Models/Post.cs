@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace UsersTodosAndPosts.Models
 {
-    public class Post
+    public class Post : UserIdEntity
     {
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
-
         [JsonPropertyName("id")]
         public long Id { get; set; }
 

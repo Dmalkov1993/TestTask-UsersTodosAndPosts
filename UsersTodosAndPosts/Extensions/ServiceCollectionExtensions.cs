@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Threading.Tasks;
 using UsersTodosAndPosts.HttpClients;
 
 namespace UsersTodosAndPosts.Extensions
@@ -24,6 +21,16 @@ namespace UsersTodosAndPosts.Extensions
         public static IServiceCollection AddTodosClient(this IServiceCollection services, string url)
         {
             services.AddHttpClient<TodosClient>(client =>
+            {
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddPostsClient(this IServiceCollection services, string url)
+        {
+            services.AddHttpClient<PostsClient>(client =>
             {
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));

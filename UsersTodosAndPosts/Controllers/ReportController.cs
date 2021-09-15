@@ -14,18 +14,20 @@ namespace UsersTodosAndPosts.Controllers
         // MediatR бы решил эту проблему.
         private readonly UsersClient usersClient;
         private readonly TodosClient todosClient;
+        private readonly PostsClient postsClient;
 
-        public ReportController(UsersClient usersClient, TodosClient todosClient)
+        public ReportController(UsersClient usersClient, TodosClient todosClient, PostsClient postsClient)
         {
             this.usersClient = usersClient;
             this.todosClient = todosClient;
+            this.postsClient = postsClient;
         }
 
         [HttpGet]
         public async Task<IActionResult> MakeReportByUserId([FromQuery] long userId)
         {
             // Тут можно было задействовать библиотеку MediatR
-            return await new MakeReportRequestHandler(usersClient, todosClient)
+            return await new MakeReportRequestHandler(usersClient, todosClient, postsClient)
                 .HandleAsync(userId);
         }
     }

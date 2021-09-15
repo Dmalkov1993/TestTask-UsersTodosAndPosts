@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace UsersTodosAndPosts.Models
 {
-    public class Todo
+    public class Todo : UserIdEntity
     {
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
-
         [JsonPropertyName("id")]
         public long Id { get; set; }
 

@@ -35,7 +35,7 @@ namespace UsersTodosAndPosts
             var serviceUrl = Configuration.GetValue<string>("ServiceUrl");
             services.AddUsersClient(serviceUrl);
             services.AddTodosClient(serviceUrl);
-            // services.AddPostsClient(serviceUrl);
+            services.AddPostsClient(serviceUrl);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
