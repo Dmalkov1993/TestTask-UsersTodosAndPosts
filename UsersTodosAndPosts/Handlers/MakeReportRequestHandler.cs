@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using UsersTodosAndPosts.HttpClients;
+using UsersTodosAndPosts.Services;
 
 namespace UsersTodosAndPosts.Controllers
 {
@@ -11,12 +12,18 @@ namespace UsersTodosAndPosts.Controllers
         private readonly UsersClient usersClient;
         private readonly TodosClient todosClient;
         private readonly PostsClient postsClient;
+        private readonly IExportReportToFileService exportReportToFileService;
 
-        public MakeReportRequestHandler(UsersClient usersClient, TodosClient todosClient, PostsClient postsClient)
+        public MakeReportRequestHandler(
+            UsersClient usersClient,
+            TodosClient todosClient,
+            PostsClient postsClient,
+            IExportReportToFileService exportReportToFileService)
         {
             this.usersClient = usersClient;
             this.todosClient = todosClient;
             this.postsClient = postsClient;
+            this.exportReportToFileService = exportReportToFileService;
         }
 
         public override async Task<IActionResult> HandleAsync(long userId)
@@ -39,7 +46,14 @@ namespace UsersTodosAndPosts.Controllers
                 .Take(5) // берем 5 первых (самые большие Id в начале коллекции)
                 .ToList();
 
-            return Ok("Запрос успешно выполнен.");
+            // Пишем в файл.
+            var fileName = $"Report from {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.txt";
+            var isExportSuccessful = await exportReportToFileService.ExportReportToFile(fileName, user, usersTodos, usersPosts);
+
+            if (!isExportSuccessful)
+                return BadRequest("Произошла ошибка при выгрузке отчета в файл.");
+
+            return Ok($"Запрос успешно выполнен, результаты сложены в файл \"{fileName}\".");
         }
     }
 }

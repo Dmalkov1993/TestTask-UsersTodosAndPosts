@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UsersTodosAndPosts.Extensions;
 using UsersTodosAndPosts.Middlewares;
+using UsersTodosAndPosts.Services;
 
 namespace UsersTodosAndPosts
 {
@@ -30,6 +31,9 @@ namespace UsersTodosAndPosts
         {
             // Регистрация мидлваре для обработки исключений
             services.AddSingleton<ExceptionHandlingMiddleware>();
+
+            // Регистрация сервиса по выгрузке отчета в файл
+            services.AddTransient<IExportReportToFileService, ExportReportToFileService>();
 
             // Добавим в инфру приложения типизированные HttpClient-ы, которые будут получать данные
             var serviceUrl = Configuration.GetValue<string>("ServiceUrl");
