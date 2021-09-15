@@ -32,9 +32,9 @@ namespace UsersTodosAndPosts
             services.AddSingleton<ExceptionHandlingMiddleware>();
 
             // Добавим в инфру приложения типизированные HttpClient-ы, которые будут получать данные
-            var serviceUrl = Configuration.GetValue("ServiceUrl", "");
+            var serviceUrl = Configuration.GetValue<string>("ServiceUrl");
             services.AddUsersClient(serviceUrl);
-            // services.AddTodosClient(serviceUrl);
+            services.AddTodosClient(serviceUrl);
             // services.AddPostsClient(serviceUrl);
 
             services.AddControllers();

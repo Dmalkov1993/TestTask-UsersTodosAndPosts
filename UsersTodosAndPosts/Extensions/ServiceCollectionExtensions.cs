@@ -20,5 +20,15 @@ namespace UsersTodosAndPosts.Extensions
             });
             return services;
         }
+
+        public static IServiceCollection AddTodosClient(this IServiceCollection services, string url)
+        {
+            services.AddHttpClient<TodosClient>(client =>
+            {
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+            });
+            return services;
+        }
     }
 }
