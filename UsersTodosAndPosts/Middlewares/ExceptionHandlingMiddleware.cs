@@ -5,7 +5,7 @@ using System.Net.Mime;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace UsersTodosAndPosts
+namespace UsersTodosAndPosts.Middlewares
 {
     internal class ExceptionHandlingMiddleware : IMiddleware
     {

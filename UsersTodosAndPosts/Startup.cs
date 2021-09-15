@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersTodosAndPosts.Extensions;
+using UsersTodosAndPosts.Middlewares;
 
 namespace UsersTodosAndPosts
 {
@@ -28,6 +30,12 @@ namespace UsersTodosAndPosts
         {
             // Регистрация мидлваре для обработки исключений
             services.AddSingleton<ExceptionHandlingMiddleware>();
+
+            // Добавим в инфру приложения типизированные HttpClient-ы, которые будут получать данные
+            var serviceUrl = Configuration.GetValue("ServiceUrl", "");
+            services.AddUsersClient(serviceUrl);
+            // services.AddTodosClient(serviceUrl);
+            // services.AddPostsClient(serviceUrl);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
