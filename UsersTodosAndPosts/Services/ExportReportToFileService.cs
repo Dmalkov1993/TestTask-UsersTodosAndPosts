@@ -13,7 +13,7 @@ namespace UsersTodosAndPosts.Services
 
         public ExportReportToFileService(IConfiguration configuration)
         {
-            urlToFile = configuration.GetValue<string>("PathForReportResult");
+            urlToFile = configuration.GetValue<string>("PathForReportResults");
         }
 
         public async Task<bool> ExportReportToFile(string fileName, UserInfo userInfo, List<Todo> todos, List<Post> posts)
