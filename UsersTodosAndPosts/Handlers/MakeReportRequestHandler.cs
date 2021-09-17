@@ -34,14 +34,21 @@ namespace UsersTodosAndPosts.Controllers
             if (user == default)
                 return BadRequest($"Пользователь с id={userId} не найден.");
 
-            // Получаем список дел, находим 5 последних завершенных
-            var usersTodos = (await todosClient.GetAllUsersTodosByUserIdAsync(userId))
+            // Параллелим запрос на получение задач и постов, создав 2 таски и запустив их параллельно.
+            var gettingUsersTodosTask = todosClient.GetAllUsersTodosByUserIdAsync(userId);
+            var gettingUsersPostsTask = postsClient.GetAllUsersPostsByUserIdAsync(userId);
+
+            // Запускаем параллельно наши таски
+            await Task.WhenAll(gettingUsersTodosTask, gettingUsersPostsTask);
+
+            // Получаем список дел, находим все завершенные
+            var usersTodos = gettingUsersTodosTask.Result
                 .Where(t => t.Completed) // дело завершено
                 .ToList();
 
             // Получаем список постов.
             // У постов нет признака что пост написан, поэтому, считаем что все посты уже написаны.
-            var usersPosts = (await postsClient.GetAllUsersPostsByUserIdAsync(userId))
+            var usersPosts = gettingUsersPostsTask.Result
                 .OrderByDescending(t => t.Id) // сортируем по убыванию Id
                 .Take(5) // берем 5 первых (самые большие Id в начале коллекции)
                 .ToList();
