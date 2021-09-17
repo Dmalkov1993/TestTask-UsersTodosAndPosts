@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -19,31 +21,22 @@ namespace UsersTodosAndPosts.HttpClients
             where TEntity : UserIdEntity
         {
             var usersEntities = new List<TEntity>();
-            var continueRequestEntities = true;
-            var entityId = 1;
 
-            // Представим, что сервис, к которому мы обращаемся "идеален" и всегда доступен.
-            while (continueRequestEntities)
+            var response = await httpClient.GetAsync(relativeUrl);
+            if (response.IsSuccessStatusCode)
             {
-                var response = await httpClient.GetAsync($"{relativeUrl}/{entityId}");
-                var postStream = await response.Content.ReadAsStreamAsync();
+                var entityStream = await response.Content.ReadAsStreamAsync();
+                var entities = await JsonSerializer.DeserializeAsync<List<TEntity>>(entityStream);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var currentPost = await JsonSerializer.DeserializeAsync<TEntity>(postStream);
+                // Если этот пост для нашего юзера - аттачим в массив.
+                var entitiesOfThisUser = entities
+                    .Where(ent => ent.UserId == userId);
 
-                    // Если этот пост для нашего юзера - аттачим в массив.
-                    if (currentPost.UserId == userId)
-                    {
-                        usersEntities.Add(currentPost);
-                    }
-                }
-                else
-                {
-                    continueRequestEntities = false;
-                }
-
-                entityId++;
+                usersEntities.AddRange(entitiesOfThisUser);
+            }
+            else
+            {
+                throw new Exception($"Не смог получить данные типа {typeof(TEntity)}, сервис вернул ошибку: {response.StatusCode}");
             }
 
             return usersEntities;
